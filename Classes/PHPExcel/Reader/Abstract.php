@@ -228,15 +228,18 @@ abstract class PHPExcel_Reader_Abstract implements PHPExcel_Reader_IReader
      */
     protected function openFile($pFilename)
     {
-        // Check if file exists
-        if (!file_exists($pFilename) || !is_readable($pFilename)) {
-            throw new PHPExcel_Reader_Exception("Could not open " . $pFilename . " for reading! File does not exist.");
-        }
-
         // Open file
         $this->fileHandle = fopen($pFilename, 'r');
         if ($this->fileHandle === false) {
-            throw new PHPExcel_Reader_Exception("Could not open file " . $pFilename . " for reading.");
+            $msg = "Could not open file " . $pFilename . " for reading!"
+            // Check if file exists
+            if (!file_exists($pFilename)) {
+                $msg .= " File does not exist."
+            } elseif !is_readable($pFilename)) {
+                $msg .= " File is not readable.";
+            }
+            
+            throw new PHPExcel_Reader_Exception($msg);
         }
     }
 
